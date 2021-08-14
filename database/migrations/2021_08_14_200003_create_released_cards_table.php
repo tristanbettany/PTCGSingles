@@ -15,6 +15,8 @@ class CreateReleasedCardsTable extends Migration
             $table->unsignedBigInteger('type_id');
             $table->string('number');
             $table->string('image')->nullable();
+            $table->integer('in_hand_quantity')->default(0);
+            $table->integer('tradeable_quantity')->default(0);
 
             $table->foreign('set_id')
                 ->references('id')
