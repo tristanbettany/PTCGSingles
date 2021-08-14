@@ -5,10 +5,10 @@ namespace App\Console\Commands;
 use App\Interfaces\ScraperServiceInterface;
 use Illuminate\Console\Command;
 
-class ScrapeCardDetailsCommand extends Command
+class ScrapeNewRecordsCommand extends Command
 {
-    protected $signature = 'scrape';
-    protected $description = 'Scrape Card details';
+    protected $signature = 'scrape:new';
+    protected $description = 'Scrape New Records';
 
     private ScraperServiceInterface $scraperService;
 
@@ -17,7 +17,7 @@ class ScrapeCardDetailsCommand extends Command
     ): int {
         $this->scraperService = $scraperService;
 
-        $this->info('Scraping data...');
+        $this->info('Scraping new records...');
 
         $this->scraperService->scrapeNewRecords();
 
