@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Interfaces\NewRecordScraperInterface;
 use App\Interfaces\ScraperServiceInterface;
 use App\Scrapers\PokellectorNewRecordScraper;
 
@@ -13,10 +14,11 @@ final class ScraperService extends AbstractService implements ScraperServiceInte
 
     public function scrapeNewRecords(): void
     {
-        /**
-         * loop each new record scraper
-         * download records
-         * save scraped records
-         */
+        foreach(self::NEW_RECORD_SCRAPERS as $scraperClass){
+            /** @var NewRecordScraperInterface $scraper */
+            $scraper = new $scraperClass();
+            $scraper->downloadRecords();
+            $scraper->saveRecords();
+        }
     }
 }
