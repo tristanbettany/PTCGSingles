@@ -1,0 +1,25 @@
+.table {
+    thead {
+        th {
+            @apply
+            px-10px
+            py-10px
+            border-b-2
+            border-ter-200
+            bg-ter-100
+            font-semibold
+            text-black
+            text-left;
+        }
+    }
+    tbody {
+        td {
+            @apply
+            text-left
+            px-10px
+            py-10px
+            border-b-2
+            border-ter-200;
+        }
+    }
+}

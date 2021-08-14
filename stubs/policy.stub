@@ -1,0 +1,57 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Auth\Access\HandlesAuthorization;
+use {{ namespacedModel }};
+use {{ namespacedUserModel }};
+
+class {{ class }}
+{
+    use HandlesAuthorization;
+
+    public function viewAny({{ user }} $user): bool
+    {
+        // TODO: implement viewAny method
+    }
+
+    public function view(
+        {{ user }} $user,
+        {{ model }} ${{ modelVariable }}
+    ): bool {
+        // TODO: implement view method
+    }
+
+    public function create({{ user }} $user): bool
+    {
+        // TODO: implement create method
+    }
+
+    public function update(
+        {{ user }} $user,
+        {{ model }} ${{ modelVariable }}
+    ): bool {
+        // TODO: implement update method
+    }
+
+    public function delete(
+        {{ user }} $user,
+        {{ model }} ${{ modelVariable }}
+    ): bool {
+        // TODO: implement delete method
+    }
+
+    public function restore(
+        {{ user }} $user,
+        {{ model }} ${{ modelVariable }}
+    ): bool {
+        // TODO: implement restore method
+    }
+
+    public function forceDelete(
+        {{ user }} $user,
+        {{ model }} ${{ modelVariable }}
+    ): bool {
+        // TODO: implement forceDelete method
+    }
+}

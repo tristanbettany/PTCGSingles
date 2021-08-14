@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Contracts\Validation\Rule;
+
+class {{ class }} implements Rule
+{
+    /** @inheritDoc */
+    public function passes(
+        $attribute,
+        $value
+    ): bool {
+        // TODO: implement passes method
+    }
+
+    /** @inheritDoc */
+    public function message()
+    {
+        return 'The validation error message.';
+    }
+}

@@ -1,0 +1,47 @@
+* {
+    @apply
+        text-16px
+        text-ter-800;
+}
+
+h1 {
+    @apply text-40px;
+}
+
+h2 {
+    @apply text-30px;
+}
+
+h3 {
+    @apply text-24px;
+}
+
+.link {
+    @apply
+        border-b-2
+        cursor-pointer;
+
+    &.pri {
+        @apply
+            text-pri-500
+            border-pri-500
+            hover:text-ter-800
+            hover:border-ter-800;
+    }
+
+    &.sec {
+        @apply
+            text-ter-800
+            border-ter-800
+            hover:text-white
+            hover:border-white;
+    }
+
+    &.ter {
+        @apply
+            text-white
+            border-white
+            hover:text-ter-300
+            hover:border-ter-300;
+    }
+}

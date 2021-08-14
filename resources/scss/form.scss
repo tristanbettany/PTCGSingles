@@ -1,0 +1,115 @@
+.form-submit {
+    @apply
+        bg-pri-500
+        text-white
+        py-10px
+        px-20px
+        text-center
+        hover:bg-white
+        border-2
+        border-pri-500
+        hover:text-black;
+
+    &.dark {
+        @apply
+            hover:bg-ter-800
+            hover:text-white;
+    }
+
+    &.sec {
+        @apply
+            bg-sec-500
+            border-sec-500
+            hover:border-sec-500
+            hover:bg-white
+            hover:text-black;
+    }
+
+    &.ter {
+        @apply
+            bg-ter-500
+            border-ter-500
+            hover:border-ter-500
+            hover:bg-white
+            hover:text-black;
+    }
+
+    &.ter-dark {
+        @apply
+            text-black
+            bg-ter-100
+            border-ter-100
+            hover:border-ter-100
+            hover:bg-ter-800
+            hover:text-white;
+    }
+}
+
+.form-input {
+    @apply
+        block
+        w-full
+        px-5px
+        border-0
+        border-b-2
+        border-ter-200
+        focus:outline-none
+        focus:border-pri-500;
+
+    &.inverted {
+        @apply
+            bg-ter-800
+            text-white;
+
+        &::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+    }
+
+    &.area {
+        @apply
+            border-l-2
+            border-r-2
+            border-t-2;
+    }
+}
+
+.form-radio, .form-check {
+    @apply
+        border-ter-300
+        border-2
+        text-pri-500
+        focus:border-ter-300
+        focus:outline-none;
+}
+
+.form-select-container {
+    @apply relative;
+
+    .form-select {
+        @apply
+            block
+            appearance-none
+            w-full
+            border-0
+            border-b-2
+            border-ter-200
+            px-10px
+            py-5px
+            focus:outline-none
+            focus:border-pri-500;
+    }
+
+    .form-select-icon {
+        @apply
+            pointer-events-none
+            absolute
+            bottom-0px
+            top-0px
+            right-0px
+            flex
+            items-center
+            px-10px
+            text-ter-600;
+    }
+}

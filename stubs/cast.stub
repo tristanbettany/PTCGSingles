@@ -1,0 +1,29 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use \Illuminate\Database\Eloquent\Model;
+
+class {{ class }} implements CastsAttributes
+{
+    /** @inheritDoc */
+    public function get(
+        $model,
+        string $key,
+        $value,
+        array $attributes
+    ) {
+        return $value;
+    }
+
+    /** @inheritDoc */
+    public function set(
+        $model,
+        string $key,
+        $value,
+        array $attributes
+    ) {
+        return $value;
+    }
+}

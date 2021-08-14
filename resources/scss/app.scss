@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body::-webkit-scrollbar {
+    @apply bg-ter-50;
+    width: 7px;
+    height: 7px;
+    overflow: visible;
+}
+
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    @apply bg-pri-600;
+}
+
+@import 'form';
+@import 'typography';
+@import 'table';
+@import 'pagination';

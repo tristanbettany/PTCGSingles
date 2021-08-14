@@ -1,0 +1,24 @@
+.pagination-link {
+    @apply
+    px-10px
+    py-5px
+    border
+    border-ter-200
+    rounded
+    relative
+    inline-flex
+    items-center
+    outline-none
+    mr-10px;
+
+    &.active {
+        @apply
+        text-pri-500
+        hover:border-pri-500;
+    }
+
+    &.inactive {
+        @apply
+        text-black;
+    }
+}
