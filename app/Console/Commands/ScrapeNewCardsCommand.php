@@ -22,5 +22,7 @@ class ScrapeNewCardsCommand extends Command
         $this->scraperService->scrapeNewCards();
 
         $this->info('Done');
+
+        return 0;
     }
 }
