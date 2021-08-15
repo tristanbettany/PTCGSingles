@@ -4,66 +4,62 @@ namespace App\Scrapers;
 
 use App\Models\Set;
 use DateTimeImmutable;
-use RuntimeException;
+use Exception;
 
-final class PokellectorNewDataScraper extends AbstractNewDataScraper
+final class PokellectorSetScraper extends AbstractSetScraper
 {
-    private ?string $setsBody;
-    private ?string $setBody;
-
     private const BASE_URL = 'https://www.pokellector.com';
 
-    public function downloadSets(): void
+    public function scrapeSets(bool $verbose = false): void
     {
-        $this->setsBody = $this->scrape(self::BASE_URL . '/sets');
-    }
+        try {
+            $setsBody = $this->scrape(self::BASE_URL . '/sets');
 
-    public function processSets(bool $verbose = false): void
-    {
-        if (empty($this->setsBody) === false) {
-            preg_match_all("#\<a.+button.+\/sets\/.+a\>#", $this->setsBody, $matches);
+            if (empty($setsBody) === false) {
+                preg_match_all("#<a.+button.+\/sets\/.+a>#", $setsBody, $matches);
 
-            if (empty($matches[0]) === false) {
-                $setLinks = $matches[0];
+                if (empty($matches[0]) === false) {
+                    $setLinks = $matches[0];
 
-                foreach ($setLinks as $key => $setLink) {
-                    $name = $this->getSetName($setLink);
+                    foreach ($setLinks as $key => $setLink) {
+                        $name = $this->getSetName($setLink);
 
-                    $existingSet = Set::query()
-                        ->where('name', $name)
-                        ->first();
+                        $existingSet = Set::query()
+                            ->where('name', $name)
+                            ->first();
 
-                    if ($existingSet !== null) {
-                        if ($verbose === true) {
-                            echo "Found: '$name' in database, skipping set scrape \n";
+                        if ($existingSet !== null) {
+                            if ($verbose === true) {
+                                echo "Found: '$name' in database, skipping set scrape \n";
+                            }
+                            continue;
                         }
-                        continue;
-                    }
 
-                    if ($verbose === true) {
-                        echo "Scraping set: $name \n";
-                    }
+                        if ($verbose === true) {
+                            echo "Scraping set: $name \n";
+                        }
 
-                    $setUrl = $this->getSetUrl($setLink);
-                    $this->downloadSet($setUrl);
+                        $setUrl = $this->getSetUrl($setLink);
+                        $setBody = $this->scrape($setUrl);
 
-                    preg_match("#(<div class=\"cards\".+)<h1#sU", $this->setBody, $match);
+                        preg_match("#(<div class=\"cards\".+)<h1#sU", $setBody, $match);
 
-                    $this->sets[] = array_merge(
-                        [
-                            'name' => $name,
-                            'logo' => $this->getSetLogo($setLink),
-                            'symbol' => $this->getSetSymbol($setLink),
-                            'data_source_url' => $setUrl,
-                        ],
-                        $this->getSetInfo($match[1])
-                    );
-
-                    if ($verbose === true) {
-                        echo "Scraped: $name \n";
+                        $this->sets[] = array_merge(
+                            [
+                                'name' => $name,
+                                'logo' => $this->getSetLogo($setLink),
+                                'symbol' => $this->getSetSymbol($setLink),
+                                'data_source_url' => $setUrl,
+                            ],
+                            $this->getSetInfo($match[1])
+                        );
                     }
                 }
             }
+        } catch (Exception $e) {
+            echo "Something went wrong! Saving sets in memory... \n";
+            $this->saveSets();
+            echo "\n\n ------- Exception Message -------- \n\n" . $e->getMessage() . " \n\n";
         }
     }
 
@@ -77,22 +73,17 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
         }
     }
 
-    private function downloadSet(string $url): void
-    {
-        $this->setBody = $this->scrape($url);
-    }
-
     private function getSetInfo(string $setInfoSection): array
     {
         $array = [];
 
-        preg_match_all("#\<span\>(.+)\<\/span\>#", $setInfoSection, $matchesOne);
+        preg_match_all("#<span>(.+)<\/span>#", $setInfoSection, $matchesOne);
 
         if(empty($matchesOne[1][1]) === false) {
             $array['base_card_count'] = (int) $matchesOne[1][1];
         }
 
-        preg_match_all("#\<cite\>(.+)\<\/cite\>#", $setInfoSection, $matchesTwo);
+        preg_match_all("#<cite>(.+)<\/cite>#", $setInfoSection, $matchesTwo);
 
         if(empty($matchesTwo[1][0]) === false) {
             if (
@@ -120,7 +111,7 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
 
     private function getSetName(string $setLink): ?string
     {
-        preg_match("#\<span\>(.+)\<\/span\>#", $setLink, $match);
+        preg_match("#<span>(.+)<\/span>#", $setLink, $match);
 
         if (empty($match[1]) === false) {
             return $match[1];
@@ -131,7 +122,7 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
 
     private function getSetLogo(string $setLink): ?string
     {
-        preg_match("#\<img src=\"(.+)\"\>\<img#", $setLink, $match);
+        preg_match("#<img src=\"(.+)\"><img#", $setLink, $match);
 
         if (empty($match[1]) === false) {
             return $this->downloadFile($match[1]);
@@ -153,7 +144,7 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
 
     private function getSetUrl(string $setLink): ?string
     {
-        preg_match("#href=\"(.+)\"\stitle.+\>\<img\ssrc#", $setLink, $match);
+        preg_match("#href=\"(.+)\"\stitle.+><img\ssrc#", $setLink, $match);
 
         if (empty($match[1]) === false) {
             return self::BASE_URL . $match[1];
