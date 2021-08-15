@@ -32,7 +32,8 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
 
                     //TODO: Check if set exists in db already and skip if it does
 
-                    $this->downloadSet($this->getSetUrl($setLink));
+                    $setUrl = $this->getSetUrl($setLink);
+                    $this->downloadSet($setUrl);
 
                     preg_match("#(<div class=\"cards\".+)<h1#sU", $this->setBody, $match);
 
@@ -41,6 +42,7 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
                             'name' => $name,
                             'logo' => $this->getSetLogo($setLink),
                             'symbol' => $this->getSetSymbol($setLink),
+                            'data_source_url' => $setUrl,
                         ],
                         $this->getSetInfo($match[1])
                     );

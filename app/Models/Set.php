@@ -20,6 +20,7 @@ class Set extends Model
         'secret_card_count',
         'symbol',
         'logo',
+        'data_source_url',
     ];
 
     protected $casts = [

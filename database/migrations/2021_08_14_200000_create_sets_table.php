@@ -16,6 +16,7 @@ class CreateSetsTable extends Migration
             $table->integer('secret_card_count')->default(0);
             $table->string('symbol')->nullable();
             $table->string('logo')->nullable();
+            $table->string('data_source_url');
 
             $table->timestamps();
         });
