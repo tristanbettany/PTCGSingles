@@ -2,22 +2,27 @@
 
 namespace App\Services;
 
-use App\Interfaces\NewCardScraperInterface;
+use App\Interfaces\NewDataScraperInterface;
 use App\Interfaces\ScraperServiceInterface;
-use App\Scrapers\PokellectorNewCardScraper;
+use App\Scrapers\PokellectorNewDataScraper;
 
 final class ScraperService extends AbstractService implements ScraperServiceInterface
 {
     public const NEW_RECORD_SCRAPERS = [
-        PokellectorNewCardScraper::class,
+        PokellectorNewDataScraper::class,
     ];
 
-    public function scrapeNewCards(): void
+    public function scrapeNewData(bool $verbose = false): void
     {
         foreach(self::NEW_RECORD_SCRAPERS as $scraperClass){
-            /** @var NewCardScraperInterface $scraper */
+            /** @var NewDataScraperInterface $scraper */
             $scraper = new $scraperClass();
+            $scraper->downloadSets();
+            $scraper->processSets($verbose);
+            $scraper->saveSets();
+
             $scraper->downloadCards();
+            $scraper->processCards();
             $scraper->saveCards();
         }
     }

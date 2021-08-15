@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface ScraperServiceInterface
 {
-    public function scrapeNewCards(): void;
+    public function scrapeNewData(bool $verbose = false): void;
 }
