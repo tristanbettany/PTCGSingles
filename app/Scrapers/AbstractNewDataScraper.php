@@ -28,7 +28,7 @@ abstract class AbstractNewDataScraper implements NewDataScraperInterface
         // TODO: Implement processSets() method.
     }
 
-    public function saveSets(): void
+    public function saveSets(bool $verbose = false): void
     {
         // TODO: Implement saveSets() method.
     }

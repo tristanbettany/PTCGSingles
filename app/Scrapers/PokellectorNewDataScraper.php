@@ -2,6 +2,7 @@
 
 namespace App\Scrapers;
 
+use App\Models\Set;
 use DateTimeImmutable;
 use RuntimeException;
 
@@ -10,9 +11,11 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
     private ?string $setsBody;
     private ?string $setBody;
 
+    private const BASE_URL = 'https://www.pokellector.com';
+
     public function downloadSets(): void
     {
-        $this->setsBody = $this->scrape('https://www.pokellector.com/sets');
+        $this->setsBody = $this->scrape(self::BASE_URL . '/sets');
     }
 
     public function processSets(bool $verbose = false): void
@@ -26,11 +29,20 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
                 foreach ($setLinks as $key => $setLink) {
                     $name = $this->getSetName($setLink);
 
-                    if ($verbose === true) {
-                        echo "Scraping $name \n";
+                    $existingSet = Set::query()
+                        ->where('name', $name)
+                        ->first();
+
+                    if ($existingSet !== null) {
+                        if ($verbose === true) {
+                            echo "Found: '$name' in database, skipping set scrape \n";
+                        }
+                        continue;
                     }
 
-                    //TODO: Check if set exists in db already and skip if it does
+                    if ($verbose === true) {
+                        echo "Scraping set: $name \n";
+                    }
 
                     $setUrl = $this->getSetUrl($setLink);
                     $this->downloadSet($setUrl);
@@ -48,16 +60,26 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
                     );
 
                     if ($verbose === true) {
-                        echo "Scraped $name \n";
+                        echo "Scraped: $name \n";
                     }
                 }
             }
         }
     }
 
-    private function downloadSet(string $relativeUrl): void
+    public function saveSets(bool $verbose = false): void
     {
-        $this->setBody = $this->scrape('https://www.pokellector.com' . $relativeUrl);
+        foreach($this->sets as $set) {
+            $createdSet = Set::create($set);
+            if ($verbose === true) {
+                echo "Saved: ". $set['name'] ." \n";
+            }
+        }
+    }
+
+    private function downloadSet(string $url): void
+    {
+        $this->setBody = $this->scrape($url);
     }
 
     private function getSetInfo(string $setInfoSection): array
@@ -67,7 +89,7 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
         preg_match_all("#\<span\>(.+)\<\/span\>#", $setInfoSection, $matchesOne);
 
         if(empty($matchesOne[1][1]) === false) {
-            $array['baseCardCount'] = (int) $matchesOne[1][1];
+            $array['base_card_count'] = (int) $matchesOne[1][1];
         }
 
         preg_match_all("#\<cite\>(.+)\<\/cite\>#", $setInfoSection, $matchesTwo);
@@ -80,16 +102,16 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
                 $secretCount = str_replace('+', '', $matchesTwo[1][0]);
                 $secretCount = str_replace('Secret', '', $secretCount);
 
-                $array['secretCardCount'] = (int) trim($secretCount);
+                $array['secret_card_count'] = (int) trim($secretCount);
             } else {
-                $array['secretCardCount'] = 0;
-                $array['releaseDate'] = new DateTimeImmutable($matchesOne[1][3] . $matchesTwo[1][0]);
+                $array['secret_card_count'] = 0;
+                $array['release_date'] = new DateTimeImmutable($matchesOne[1][3] . $matchesTwo[1][0]);
             }
         }
 
         if(empty($matchesOne[1][3]) === false) {
             if(empty($matchesTwo[1][1]) === false) {
-                $array['releaseDate'] = new DateTimeImmutable($matchesOne[1][3] . $matchesTwo[1][1]);
+                $array['release_date'] = new DateTimeImmutable($matchesOne[1][3] . $matchesTwo[1][1]);
             }
         }
 
@@ -131,10 +153,10 @@ final class PokellectorNewDataScraper extends AbstractNewDataScraper
 
     private function getSetUrl(string $setLink): ?string
     {
-        preg_match("#href=\"(.+)\"\>\<img\ssrc#", $setLink, $match);
+        preg_match("#href=\"(.+)\"\stitle.+\>\<img\ssrc#", $setLink, $match);
 
         if (empty($match[1]) === false) {
-            return $match[1];
+            return self::BASE_URL . $match[1];
         }
 
         return null;

@@ -19,7 +19,7 @@ final class ScraperService extends AbstractService implements ScraperServiceInte
             $scraper = new $scraperClass();
             $scraper->downloadSets();
             $scraper->processSets($verbose);
-            $scraper->saveSets();
+            $scraper->saveSets($verbose);
 
             $scraper->downloadCards();
             $scraper->processCards();
