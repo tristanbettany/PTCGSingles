@@ -16,10 +16,10 @@ final class PokellectorSetScraper extends AbstractSetScraper
             $setsBody = $this->scrape(self::BASE_URL . '/sets');
 
             if (empty($setsBody) === false) {
-                preg_match_all("#<a.+button.+\/sets\/.+a>#", $setsBody, $matches);
+                preg_match_all("#<a.+button.+\/sets\/.+a>#", $setsBody, $setLinkMatches);
 
-                if (empty($matches[0]) === false) {
-                    $setLinks = $matches[0];
+                if (empty($setLinkMatches[0]) === false) {
+                    $setLinks = $setLinkMatches[0];
 
                     foreach ($setLinks as $key => $setLink) {
                         $name = $this->getSetName($setLink);
@@ -42,7 +42,8 @@ final class PokellectorSetScraper extends AbstractSetScraper
                         $setUrl = $this->getSetUrl($setLink);
                         $setBody = $this->scrape($setUrl);
 
-                        preg_match("#(<div class=\"cards\".+)<h1#sU", $setBody, $match);
+                        preg_match("#(<div\sclass=\"cards\".+)<h1#sU", $setBody, $setInfoMatch);
+                        preg_match("#(<div\sclass=\"breadcrumbs\">.+)<h1#sU", $setBody, $setBreadCrumbMatch);
 
                         $this->sets[] = array_merge(
                             [
@@ -50,9 +51,20 @@ final class PokellectorSetScraper extends AbstractSetScraper
                                 'logo' => $this->getSetLogo($setLink),
                                 'symbol' => $this->getSetSymbol($setLink),
                                 'data_source_url' => $setUrl,
+                                'series' => $this->getSetSeries(trim($setBreadCrumbMatch[1])),
                             ],
-                            $this->getSetInfo($match[1])
+                            $this->getSetInfo($setInfoMatch[1])
                         );
+
+                        // For development
+                        if ($key >= 5) {
+                            break;
+                        }
+
+                        // Lets sleep for 5 mins at 50 sets, to avoid being booted off by something like cloudflare
+                        if ($key >= 50) {
+                            sleep(300);
+                        }
                     }
                 }
             }
@@ -71,6 +83,17 @@ final class PokellectorSetScraper extends AbstractSetScraper
                 echo "Saved: ". $set['name'] ." \n";
             }
         }
+    }
+
+    private function getSetSeries(string $setBreadCrumbs): ?string
+    {
+        preg_match_all("#<a\shref=\".+\">(.+)<\/a>#U", $setBreadCrumbs, $matches);
+
+        if (empty($matches[1][1]) === false) {
+            return trim(str_replace('Series', '', $matches[1][1]));
+        }
+
+        return null;
     }
 
     private function getSetInfo(string $setInfoSection): array
@@ -122,10 +145,10 @@ final class PokellectorSetScraper extends AbstractSetScraper
 
     private function getSetLogo(string $setLink): ?string
     {
-        preg_match("#<img src=\"(.+)\"><img#", $setLink, $match);
+        preg_match("#<img\ssrc=\"(.+)\"><img#", $setLink, $match);
 
         if (empty($match[1]) === false) {
-            return $this->downloadFile($match[1]);
+            return $this->downloadFile($match[1], true);
         }
 
         return null;
@@ -136,7 +159,7 @@ final class PokellectorSetScraper extends AbstractSetScraper
         preg_match("#\"symbol\"\ssrc=\"(.+)\"\stitle#", $setLink, $match);
 
         if (empty($match[1]) === false) {
-            return $this->downloadFile($match[1]);
+            return $this->downloadFile($match[1], true);
         }
 
         return null;

@@ -15,6 +15,7 @@ class Set extends Model
 
     protected $fillable = [
         'name',
+        'series',
         'release_date',
         'base_card_count',
         'secret_card_count',

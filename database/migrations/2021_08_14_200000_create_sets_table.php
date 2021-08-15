@@ -11,6 +11,7 @@ class CreateSetsTable extends Migration
         Schema::create('sets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('series')->nullable();
             $table->dateTime('release_date')->nullable();
             $table->integer('base_card_count')->default(0);
             $table->integer('secret_card_count')->default(0);

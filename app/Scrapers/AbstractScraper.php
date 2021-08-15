@@ -16,8 +16,10 @@ abstract class AbstractScraper implements ScraperInterface
         $this->guzzle = new Client();
     }
 
-    protected function downloadFile(string $url): string
-    {
+    protected function downloadFile(
+        string $url,
+        bool $isPublic = false
+    ): string {
         sleep(1);
 
         $headers = get_headers($url);
@@ -28,9 +30,14 @@ abstract class AbstractScraper implements ScraperInterface
         sleep(1);
 
         $fileContents = file_get_contents($url);
-        $filename = basename($url);
+        $filename = uniqid();
 
-        Storage::disk()->put(
+        $disk = 'local';
+        if ($isPublic === true) {
+            $disk = 'public';
+        }
+
+        Storage::disk($disk)->put(
             $filename,
             $fileContents
         );
