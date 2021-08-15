@@ -30,7 +30,9 @@ abstract class AbstractScraper implements ScraperInterface
         sleep(1);
 
         $fileContents = file_get_contents($url);
-        $filename = uniqid();
+
+        $pathinfo = pathinfo($url);
+        $filename = uniqid() . '.' . $pathinfo['extension'];
 
         $disk = 'local';
         if ($isPublic === true) {
