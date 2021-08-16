@@ -2,6 +2,7 @@
 
 namespace App\Scrapers;
 
+use App\Models\Series;
 use App\Models\Set;
 use DateTimeImmutable;
 use Exception;
@@ -56,6 +57,10 @@ final class PokellectorSetScraper extends AbstractSetScraper
                             $this->getSetInfo($setInfoMatch[1])
                         );
 
+                        if ($key >= 2) {
+                            break;
+                        }
+
                         // Lets sleep for 5 mins at 50 sets, to avoid being booted off by something like cloudflare
                         if ($key >= 50) {
                             sleep(300);
@@ -73,6 +78,21 @@ final class PokellectorSetScraper extends AbstractSetScraper
     public function saveSets(bool $verbose = false): void
     {
         foreach($this->sets as $set) {
+            $existingSeries = Series::query()
+                ->where('name', $set['series'])
+                ->first();
+
+            if ($existingSeries === null) {
+                $series = Series::create([
+                    'name' => $set['series'],
+                ]);
+                $set['series_id'] = $series->id;
+            } else {
+                $set['series_id'] = $existingSeries->id;
+            }
+
+            unset($set['series']);
+
             $createdSet = Set::create($set);
             if ($verbose === true) {
                 echo "Saved: ". $set['name'] ." \n";

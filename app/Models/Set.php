@@ -22,6 +22,7 @@ class Set extends Model
         'symbol',
         'logo',
         'data_source_url',
+        'series_id',
     ];
 
     protected $casts = [
@@ -33,5 +34,10 @@ class Set extends Model
     public function releasedCards()
     {
         return $this->hasMany(ReleasedCard::class);
+    }
+
+    public function series()
+    {
+        return $this->belongsTo(Series::class);
     }
 }

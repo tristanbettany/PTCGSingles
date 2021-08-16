@@ -11,13 +11,17 @@ class CreateSetsTable extends Migration
         Schema::create('sets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('series')->nullable();
+            $table->unsignedBigInteger('series_id');
             $table->dateTime('release_date')->nullable();
             $table->integer('base_card_count')->default(0);
             $table->integer('secret_card_count')->default(0);
             $table->string('symbol')->nullable();
             $table->string('logo')->nullable();
             $table->string('data_source_url');
+
+            $table->foreign('series_id')
+                ->references('id')
+                ->on('series');
 
             $table->timestamps();
         });
