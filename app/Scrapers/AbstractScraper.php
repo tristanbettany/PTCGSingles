@@ -20,14 +20,12 @@ abstract class AbstractScraper implements ScraperInterface
         string $url,
         bool $isPublic = false
     ): string {
-        sleep(1);
-
         $headers = get_headers($url);
         if (str_contains($headers[0], '200 OK') !== true) {
             throw new RuntimeException('Unable to download file');
         }
 
-        sleep(1);
+        sleep(rand(1, 2));
 
         $fileContents = file_get_contents($url);
 
@@ -49,7 +47,7 @@ abstract class AbstractScraper implements ScraperInterface
 
     protected function scrape(string $url): string
     {
-        sleep(2);
+        sleep(rand(2, 5));
 
         $response = $this->guzzle->request(
             'GET',
