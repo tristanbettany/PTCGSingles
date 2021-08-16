@@ -5,7 +5,7 @@ namespace App\Scrapers;
 use App\Interfaces\ScraperInterface;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
+use Exception;
 
 abstract class AbstractScraper implements ScraperInterface
 {
@@ -22,10 +22,8 @@ abstract class AbstractScraper implements ScraperInterface
     ): string {
         $headers = get_headers($url);
         if (str_contains($headers[0], '200 OK') !== true) {
-            throw new RuntimeException('Unable to download file');
+            throw new Exception('Unable to download file');
         }
-
-        sleep(rand(1, 2));
 
         $fileContents = file_get_contents($url);
 
@@ -47,8 +45,6 @@ abstract class AbstractScraper implements ScraperInterface
 
     protected function scrape(string $url): string
     {
-        sleep(rand(2, 5));
-
         $response = $this->guzzle->request(
             'GET',
             $url,

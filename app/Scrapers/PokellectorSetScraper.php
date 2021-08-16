@@ -56,11 +56,6 @@ final class PokellectorSetScraper extends AbstractSetScraper
                             ],
                             $this->getSetInfo($setInfoMatch[1])
                         );
-
-                        // Lets sleep for 5 mins at 50 sets, to avoid being booted off by something like cloudflare
-                        if ($key >= 50) {
-                            sleep(300);
-                        }
                     }
                 }
             }
