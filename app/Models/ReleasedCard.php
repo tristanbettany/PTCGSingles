@@ -21,6 +21,9 @@ class ReleasedCard extends Model
         'image',
         'in_hand_quantity',
         'tradeable_quantity',
+        'data_source_url',
+        'is_reverse_holo',
+        'name',
     ];
 
     protected $casts = [
@@ -36,10 +39,5 @@ class ReleasedCard extends Model
     public function rarity()
     {
         return $this->hasOne(Rarity::class, 'rarity_id');
-    }
-
-    public function type()
-    {
-        return $this->hasOne(Type::class, 'type_id');
     }
 }

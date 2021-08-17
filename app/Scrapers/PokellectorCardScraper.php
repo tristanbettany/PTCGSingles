@@ -2,9 +2,11 @@
 
 namespace App\Scrapers;
 
+use App\Models\Rarity;
 use App\Models\ReleasedCard;
 use App\Models\Set;
 use Exception;
+use phpDocumentor\Reflection\Types\Boolean;
 
 final class PokellectorCardScraper extends AbstractCardScraper
 {
@@ -31,24 +33,46 @@ final class PokellectorCardScraper extends AbstractCardScraper
                                 $name = $cardLinkMatches[2][$key];
                             }
 
+                            $existingCard = ReleasedCard::query()
+                                ->where('name', $name)
+                                ->where('set_id', $set->id)
+                                ->first();
+
+                            if ($existingCard !== null) {
+                                if ($verbose === true) {
+                                    echo "Found: '$name' for set: '$set->name' in database, skipping card scrape \n";
+                                }
+                                continue;
+                            }
+
                             if ($verbose === true) {
                                 echo "Scraping card: $name \n";
                             }
 
                             $cardBody = $this->scrape(self::BASE_URL . $cardLink);
 
-                            $this->cards[] = array_merge(
-                                $this->getStandardCardInfo($cardBody),
-                                $this->getAlternateCardsInfo($cardBody),
-                                [
-                                    'data_source_url' => self::BASE_URL . $cardLink,
-                                ],
-                            );
+                            $cardArray = [
+                                'rarity' => $this->getRarity($cardBody),
+                                'number' => $this->getCardNumber($cardBody),
+                                'name' => $name,
+                                'set_id' => $set->id,
+                                'data_source_url' => self::BASE_URL . $cardLink,
+                                'image' => $this->getCardImage($cardBody),
+                            ];
+
+                            $this->cards[] = $cardArray;
+
+                            if ($this->hasReverseHolo($cardBody) === true) {
+                                $this->cards[] = array_merge(
+                                    $cardArray,
+                                    [
+                                        'is_reverse_holo' => true,
+                                    ]
+                                );
+                            }
                         }
                     }
                 }
-
-                break;
             }
         } catch (Exception $e) {
             echo "Something went wrong! Saving cards in memory... \n";
@@ -59,24 +83,70 @@ final class PokellectorCardScraper extends AbstractCardScraper
 
     public function saveCards(bool $verbose = false): void
     {
+        foreach($this->cards as $card) {
+            $existingRarity = Rarity::query()
+                ->where('name', $card['rarity'])
+                ->first();
 
+            if ($existingRarity === null) {
+                $rarity = Rarity::create([
+                    'name' => $card['rarity'],
+                ]);
+                $card['rarity_id'] = $rarity->id;
+            } else {
+                $card['rarity_id'] = $existingRarity->id;
+            }
+
+            unset($card['rarity']);
+
+            $createdCard = ReleasedCard::create($card);
+            if ($verbose === true) {
+                echo "Saved: ". $card['name'] ." \n";
+            }
+        }
     }
 
-    private function getStandardCardInfo(string $cardBody): array
+    private function getCardImage(string $cardBody): ?string
     {
-        $array = [];
+        preg_match("#og:image.+content=\"(.+)\"\>#", $cardBody, $match);
 
+        if (empty($match[1]) === false) {
+            return $this->downloadFile($match[1], true);
+        }
 
-
-        return $array;
+        return null;
     }
 
-    private function getAlternateCardsInfo(string $cardBody): array
+    private function getRarity(string $cardBody): ?string
     {
-        $array = [];
+        preg_match("#Rarity:<\/strong\>\s(.+)\<\/div\>#", $cardBody, $rarityMatch);
 
+        if (empty($rarityMatch[1]) === false) {
+            return $rarityMatch[1];
+        }
 
+        return null;
+    }
 
-        return $array;
+    private function getCardNumber(string $cardBody): ?string
+    {
+        preg_match("#Card:.+\"\>(\d+)\/#", $cardBody, $cardNumberMatch);
+
+        if (empty($cardNumberMatch[1]) === false) {
+            return $cardNumberMatch[1];
+        }
+
+        return null;
+    }
+
+    private function hasReverseHolo(string $cardBody): bool
+    {
+        preg_match("#\>(Reverse Holo)\<#", $cardBody, $reverseHoloMatch);
+
+        if (empty($reverseHoloMatch[1]) === false) {
+            return true;
+        }
+
+        return false;
     }
 }
