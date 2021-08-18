@@ -27,8 +27,7 @@ abstract class AbstractScraper implements ScraperInterface
 
         $fileContents = file_get_contents($url);
 
-        $pathinfo = pathinfo($url);
-        $filename = uniqid() . '.' . $pathinfo['extension'];
+        $filename = basename($url);
 
         $disk = 'local';
         if ($isPublic === true) {

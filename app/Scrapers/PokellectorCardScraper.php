@@ -20,39 +20,45 @@ final class PokellectorCardScraper extends AbstractCardScraper
                 $setBody = $this->scrape($set->data_source_url);
 
                 if (empty($setBody) === false) {
-                    preg_match_all("#<a href=\"(\/card.+)\"\sname=\".+title=\"(.+)\s-#", $setBody, $cardLinkMatches);
+                    preg_match_all("#<a href=\"(\/card.+)\"\sname=\".+title=\"(.+)\s-\s.+\#(\d+)\"\>#", $setBody, $cardLinkMatches);
 
                     if (empty($cardLinkMatches[1]) === false) {
                         $cardLinks = $cardLinkMatches[1];
 
                         foreach ($cardLinks as $key => $cardLink) {
                             $name = 'Unknown Card';
+                            $number = 0;
 
                             if (empty($cardLinkMatches[2][$key]) === false) {
                                 $name = $cardLinkMatches[2][$key];
                             }
 
+                            if (empty($cardLinkMatches[3][$key]) === false) {
+                                $number = $cardLinkMatches[3][$key];
+                            }
+
                             $existingCard = ReleasedCard::query()
                                 ->where('name', $name)
                                 ->where('set_id', $set->id)
+                                ->where('number', $number)
                                 ->first();
 
                             if ($existingCard !== null) {
                                 if ($verbose === true) {
-                                    echo "Found: '$name' for set: '$set->name' in database, skipping card scrape \n";
+                                    echo "Found: $name $number/$set->base_card_count ($set->name) in database, skipping card scrape \n";
                                 }
                                 continue;
                             }
 
                             if ($verbose === true) {
-                                echo "Scraping card: '$name' for set '$set->name'\n";
+                                echo "Scraping card: $name $number/$set->base_card_count ($set->name) \n";
                             }
 
                             $cardBody = $this->scrape(self::BASE_URL . $cardLink);
 
                             $cardArray = [
                                 'rarity' => $this->getRarity($cardBody),
-                                'number' => $this->getCardNumber($cardBody),
+                                'number' => $number,
                                 'name' => $name,
                                 'set_id' => $set->id,
                                 'data_source_url' => self::BASE_URL . $cardLink,
@@ -130,17 +136,6 @@ final class PokellectorCardScraper extends AbstractCardScraper
 
         if (empty($rarityMatch[1]) === false) {
             return $rarityMatch[1];
-        }
-
-        return null;
-    }
-
-    private function getCardNumber(string $cardBody): ?string
-    {
-        preg_match("#Card:.+\"\>(\d+)\/#", $cardBody, $cardNumberMatch);
-
-        if (empty($cardNumberMatch[1]) === false) {
-            return $cardNumberMatch[1];
         }
 
         return null;
