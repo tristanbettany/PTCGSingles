@@ -11,8 +11,10 @@ final class PokellectorSetScraper extends AbstractSetScraper
 {
     private const BASE_URL = 'https://www.pokellector.com';
 
-    public function scrapeSets(bool $verbose = false): void
-    {
+    public function scrapeSets(
+        string $exitAtSeries = 'XY',
+        bool $verbose = false
+    ): void {
         try {
             $setsBody = $this->scrape(self::BASE_URL . '/sets');
 
@@ -46,13 +48,20 @@ final class PokellectorSetScraper extends AbstractSetScraper
                         preg_match("#(<div\sclass=\"cards\".+)<h1#sU", $setBody, $setInfoMatch);
                         preg_match("#(<div\sclass=\"breadcrumbs\">.+)<h1#sU", $setBody, $setBreadCrumbMatch);
 
+                        $series = $this->getSetSeries(trim($setBreadCrumbMatch[1]));
+
+                        if ($series === $exitAtSeries) {
+                            echo "No More series required, exiting set scrape...\n";
+                            break;
+                        }
+
                         $set = array_merge(
                             [
                                 'name' => $name,
                                 'logo' => $this->getSetLogo($setLink),
                                 'symbol' => $this->getSetSymbol($setLink),
                                 'data_source_url' => $setUrl,
-                                'series' => $this->getSetSeries(trim($setBreadCrumbMatch[1])),
+                                'series' => $series,
                             ],
                             $this->getSetInfo($setInfoMatch[1])
                         );

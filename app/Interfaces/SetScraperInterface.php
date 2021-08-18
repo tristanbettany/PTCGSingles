@@ -4,5 +4,8 @@ namespace App\Interfaces;
 
 interface SetScraperInterface
 {
-    public function scrapeSets(bool $verbose = false): void;
+    public function scrapeSets(
+        string $exitAtSeries = 'XY',
+        bool $verbose = false
+    ): void;
 }

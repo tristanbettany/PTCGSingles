@@ -19,7 +19,7 @@ class ScrapeNewDataCommand extends Command
 
         $this->info('Scraping new data...');
 
-        $this->scraperService->scrape(true);
+        $this->scraperService->scrape('XY', true);
 
         $this->info('Done');
 

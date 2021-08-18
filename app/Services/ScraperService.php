@@ -18,12 +18,14 @@ final class ScraperService extends AbstractService implements ScraperServiceInte
         PokellectorCardScraper::class,
     ];
 
-    public function scrape(bool $verbose = false): void
-    {
+    public function scrape(
+        string $exitAtSeries = 'XY',
+        bool $verbose = false
+    ): void {
         foreach(self::SET_SCRAPERS as $setScraper){
             /** @var SetScraperInterface $scraper */
             $scraper = new $setScraper();
-            $scraper->scrapeSets($verbose);
+            $scraper->scrapeSets($exitAtSeries, $verbose);
         }
 
         foreach(self::CARD_SCRAPERS as $cardScraper){

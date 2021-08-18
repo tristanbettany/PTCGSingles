@@ -4,5 +4,8 @@ namespace App\Interfaces;
 
 interface ScraperServiceInterface
 {
-    public function scrape(bool $verbose = false): void;
+    public function scrape(
+        string $exitAtSeries = 'XY',
+        bool $verbose = false
+    ): void;
 }
