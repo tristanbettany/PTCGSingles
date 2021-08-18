@@ -46,7 +46,7 @@ final class PokellectorSetScraper extends AbstractSetScraper
                         preg_match("#(<div\sclass=\"cards\".+)<h1#sU", $setBody, $setInfoMatch);
                         preg_match("#(<div\sclass=\"breadcrumbs\">.+)<h1#sU", $setBody, $setBreadCrumbMatch);
 
-                        $this->sets[] = array_merge(
+                        $set = array_merge(
                             [
                                 'name' => $name,
                                 'logo' => $this->getSetLogo($setLink),
@@ -56,37 +56,44 @@ final class PokellectorSetScraper extends AbstractSetScraper
                             ],
                             $this->getSetInfo($setInfoMatch[1])
                         );
+
+                        $this->saveSet($set, $verbose);
                     }
                 }
             }
         } catch (Exception $e) {
-            echo "Something went wrong! Saving sets in memory... \n";
-            $this->saveSets();
+            echo "Something went wrong!... \n";
             echo "\n\n ------- Exception Message -------- \n\n" . $e->getMessage() . " \n\n";
         }
     }
 
-    public function saveSets(bool $verbose = false): void
-    {
-        foreach($this->sets as $set) {
-            $existingSeries = Series::query()
-                ->where('name', $set['series'])
-                ->first();
+    private function saveSet(
+        array $set,
+        bool $verbose = false
+    ): void {
+        $existingSeries = Series::query()
+            ->where('name', $set['series'])
+            ->first();
 
-            if ($existingSeries === null) {
-                $series = Series::create([
-                    'name' => $set['series'],
-                ]);
-                $set['series_id'] = $series->id;
-            } else {
-                $set['series_id'] = $existingSeries->id;
-            }
+        if ($existingSeries === null) {
+            $series = Series::create([
+                'name' => $set['series'],
+            ]);
+            $set['series_id'] = $series->id;
+        } else {
+            $set['series_id'] = $existingSeries->id;
+        }
 
-            unset($set['series']);
+        unset($set['series']);
 
+        $existingSet = Set::query()
+            ->where('name', $set['name'])
+            ->first();
+
+        if ($existingSet === null) {
             $createdSet = Set::create($set);
             if ($verbose === true) {
-                echo "Saved: ". $set['name'] ." \n";
+                echo "Saved: " . $set['name'] . " \n";
             }
         }
     }

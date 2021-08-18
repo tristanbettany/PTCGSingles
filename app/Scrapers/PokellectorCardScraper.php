@@ -6,7 +6,6 @@ use App\Models\Rarity;
 use App\Models\ReleasedCard;
 use App\Models\Set;
 use Exception;
-use phpDocumentor\Reflection\Types\Boolean;
 
 final class PokellectorCardScraper extends AbstractCardScraper
 {
@@ -46,7 +45,7 @@ final class PokellectorCardScraper extends AbstractCardScraper
                             }
 
                             if ($verbose === true) {
-                                echo "Scraping card: $name \n";
+                                echo "Scraping card: '$name' for set '$set->name'\n";
                             }
 
                             $cardBody = $this->scrape(self::BASE_URL . $cardLink);
@@ -60,48 +59,56 @@ final class PokellectorCardScraper extends AbstractCardScraper
                                 'image' => $this->getCardImage($cardBody),
                             ];
 
-                            $this->cards[] = $cardArray;
+                            $this->saveCard($cardArray, $verbose);
 
                             if ($this->hasReverseHolo($cardBody) === true) {
-                                $this->cards[] = array_merge(
+                                $cardArray2 = array_merge(
                                     $cardArray,
                                     [
                                         'is_reverse_holo' => true,
                                     ]
                                 );
+
+                                $this->saveCard($cardArray2, $verbose);
                             }
                         }
                     }
                 }
             }
         } catch (Exception $e) {
-            echo "Something went wrong! Saving cards in memory... \n";
-            $this->saveCards();
+            echo "Something went wrong!... \n";
             echo "\n\n ------- Exception Message -------- \n\n" . $e->getMessage() . " \n\n";
         }
     }
 
-    public function saveCards(bool $verbose = false): void
-    {
-        foreach($this->cards as $card) {
-            $existingRarity = Rarity::query()
-                ->where('name', $card['rarity'])
-                ->first();
+    private function saveCard(
+        array $card,
+        bool $verbose = false
+    ): void {
+        $existingRarity = Rarity::query()
+            ->where('name', $card['rarity'])
+            ->first();
 
-            if ($existingRarity === null) {
-                $rarity = Rarity::create([
-                    'name' => $card['rarity'],
-                ]);
-                $card['rarity_id'] = $rarity->id;
-            } else {
-                $card['rarity_id'] = $existingRarity->id;
-            }
+        if ($existingRarity === null) {
+            $rarity = Rarity::create([
+                'name' => $card['rarity'],
+            ]);
+            $card['rarity_id'] = $rarity->id;
+        } else {
+            $card['rarity_id'] = $existingRarity->id;
+        }
 
-            unset($card['rarity']);
+        unset($card['rarity']);
 
+        $existingCard = ReleasedCard::query()
+            ->where('name', $card['name'])
+            ->where('set_id', $card['set_id'])
+            ->first();
+
+        if ($existingCard === null) {
             $createdCard = ReleasedCard::create($card);
             if ($verbose === true) {
-                echo "Saved: ". $card['name'] ." \n";
+                echo "Saved: " . $card['name'] . " \n";
             }
         }
     }

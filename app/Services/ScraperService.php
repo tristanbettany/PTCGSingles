@@ -24,14 +24,12 @@ final class ScraperService extends AbstractService implements ScraperServiceInte
             /** @var SetScraperInterface $scraper */
             $scraper = new $setScraper();
             $scraper->scrapeSets($verbose);
-            $scraper->saveSets($verbose);
         }
 
         foreach(self::CARD_SCRAPERS as $cardScraper){
             /** @var CardScraperInterface $scraper */
             $scraper = new $cardScraper();
             $scraper->scrapeCards($verbose);
-            $scraper->saveCards($verbose);
         }
     }
 }
