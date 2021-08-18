@@ -109,6 +109,7 @@ final class PokellectorCardScraper extends AbstractCardScraper
         $existingCard = ReleasedCard::query()
             ->where('name', $card['name'])
             ->where('set_id', $card['set_id'])
+            ->where('number', $card['number'])
             ->first();
 
         if ($existingCard === null) {
