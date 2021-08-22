@@ -19,6 +19,20 @@ for (i = 0; i < 200; i++) {
     FilterSizeObject[(Filter * i) + 'px'] = (Filter * i) + 'px';
 }
 
+pokemonColorObject = {
+    50: "#327dc1",
+    100: "#2873b7",
+    200: "#1e69ad",
+    300: "#145fa3",
+    400: "#0a5599",
+    DEFAULT: "#004b8f",
+    500: "#004b8f",
+    600: "#004185",
+    700: "#00377b",
+    800: "#002d71",
+    900: "#002367"
+};
+
 module.exports = {
     purge: false,
     darkMode: false, // or 'media' or 'class'
@@ -27,20 +41,21 @@ module.exports = {
             appearance: ['hover', 'focus'],
         },
         colors: {
+            pokemon: pokemonColorObject,
             transparent: 'transparent',
             current: 'currentColor',
             black: '#22292f',
             white: colors.white,
             gray: colors.blueGray,
             grey: colors.blueGray,
-            primary: colors.blue,
-            secondary: colors.green,
+            primary: pokemonColorObject,
+            secondary: colors.red,
             tertiary: colors.blueGray,
-            pri: colors.teal,
-            sec: colors.emerald,
+            pri: pokemonColorObject,
+            sec: colors.red,
             ter: colors.blueGray,
-            p: colors.teal,
-            s: colors.emerald,
+            p: pokemonColorObject,
+            s: colors.red,
             t: colors.blueGray,
             success: colors.green,
             error: colors.red,
