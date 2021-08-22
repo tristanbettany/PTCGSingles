@@ -12,7 +12,6 @@ class RootController extends Controller
 {
     public function getIndex(Request $request): Renderable
     {
-        $set = null;
         if ($request->has('set') === true) {
             $set = Set::find($request->get('set'));
         }
@@ -25,7 +24,7 @@ class RootController extends Controller
 
         return view('index')
             ->with('series', Series::all())
-            ->with('set', $set)
+            ->with('set', $set ?? null)
             ->with('latestSets', $latestSets ?? null);
     }
 }
