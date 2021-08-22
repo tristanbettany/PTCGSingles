@@ -9,6 +9,27 @@
     <script src="https://kit.fontawesome.com/a016df5e6e.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    @yield('content')
+
+    <div class="w-full p-20px bg-pri">
+        <div class="container mx-auto">
+            <a href="/"><img class="h-100px" src="{{ asset('img/logo.png') }}" /></a>
+        </div>
+    </div>
+
+    <div class="container mx-auto mt-20px">
+
+        <div class="flex flex-row justify-start flex-wrap items-start ">
+            <div class="w-1/4">
+                @includeIf('partials.sets', [
+                    'series' => $series,
+                ])
+            </div>
+            <div class="w-3/4">
+                @yield('content')
+            </div>
+        </div>
+
+    </div>
+
 </body>
 </html>

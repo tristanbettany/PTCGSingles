@@ -6,7 +6,7 @@
 
         @foreach($seri->sets as $set)
             <div class="w-full">
-                <h2 class="text-18px"><a href="?set={{ $set->id }}">{{ $set->name }}</a></h2>
+                <a class="link sec pb-10px" href="?set={{ $set->id }}">{{ $set->name }}</a>
             </div>
         @endforeach
     </div>
