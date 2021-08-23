@@ -20,19 +20,22 @@ abstract class AbstractScraper implements ScraperInterface
         string $url,
         bool $isPublic = false
     ): string {
+        $disk = 'local';
+        if ($isPublic === true) {
+            $disk = 'public';
+        }
+
+        $filename = basename($url);
+        if (Storage::disk($disk)->exists($filename) === true) {
+            return $filename;
+        }
+
         $headers = get_headers($url);
         if (str_contains($headers[0], '200 OK') !== true) {
             throw new Exception('Unable to download file');
         }
 
         $fileContents = file_get_contents($url);
-
-        $filename = basename($url);
-
-        $disk = 'local';
-        if ($isPublic === true) {
-            $disk = 'public';
-        }
 
         Storage::disk($disk)->put(
             $filename,

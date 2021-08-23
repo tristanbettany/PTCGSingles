@@ -4,6 +4,7 @@ namespace App\Scrapers;
 
 use App\Models\Rarity;
 use App\Models\ReleasedCard;
+use App\Models\ReleasedCardVersion;
 use App\Models\Set;
 use Exception;
 
@@ -65,17 +66,17 @@ final class PokellectorCardScraper extends AbstractCardScraper
                                 'image' => $this->getCardImage($cardBody),
                             ];
 
-                            $this->saveCard($cardArray, $verbose);
+                            $releasedCard = $this->saveCard($cardArray, $verbose);
+                            ReleasedCardVersion::create([
+                                'released_card_id' => $releasedCard->id,
+                            ]);
 
                             if ($this->hasReverseHolo($cardBody) === true) {
-                                $cardArray2 = array_merge(
-                                    $cardArray,
-                                    [
-                                        'is_reverse_holo' => true,
-                                    ]
-                                );
-
-                                $this->saveCard($cardArray2, $verbose);
+                                ReleasedCardVersion::create([
+                                    'released_card_id' => $releasedCard->id,
+                                    'is_standard' => false,
+                                    'is_reverse_holo' => true,
+                                ]);
                             }
                         }
                     }
@@ -90,7 +91,7 @@ final class PokellectorCardScraper extends AbstractCardScraper
     private function saveCard(
         array $card,
         bool $verbose = false
-    ): void {
+    ): ReleasedCard {
         $existingRarity = Rarity::query()
             ->where('name', $card['rarity'])
             ->first();
@@ -106,18 +107,20 @@ final class PokellectorCardScraper extends AbstractCardScraper
 
         unset($card['rarity']);
 
-        $existingCard = ReleasedCard::query()
+        $cardObject = ReleasedCard::query()
             ->where('name', $card['name'])
             ->where('set_id', $card['set_id'])
             ->where('number', $card['number'])
             ->first();
 
-        if ($existingCard === null) {
-            $createdCard = ReleasedCard::create($card);
+        if ($cardObject === null) {
+            $cardObject = ReleasedCard::create($card);
             if ($verbose === true) {
                 echo "Saved: " . $card['name'] . " \n";
             }
         }
+
+        return $cardObject;
     }
 
     private function getCardImage(string $cardBody): ?string

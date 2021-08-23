@@ -17,32 +17,20 @@
                 <div class="w-1/2">
                     <a href="{{ asset('storage/' . $card->image) }}" target="_blank"><img src="{{ asset('storage/' . $card->image) }}"/></a>
                 </div>
-                <div class="w-1/2 pl-10px">
+                <div class="w-1/2 px-10px">
                     <h2 class="text-28px pb-10px">{{ $card->name }} {{ $card->paddedNumber() }}/{{ $set->base_card_count }}</h2>
-                    <p><span class="font-bold">In hand Qty: </span>{{ $card->in_hand_quantity }}</p>
-                    <p class="pb-10px"><span class="font-bold">Tradeable Qty: </span>{{ $card->tradeable_quantity }}</p>
-                    <p class="pb-30px"><span class="font-bold">Average Value: </span>£000.00</p>
 
+                    @foreach($card->versions as $version)
 
-                    <div class="pb-10px">
-                        <div class="w-full flex flex-row justify-start flex-wrap items-center mb-20px">
-                            <p class="w-1/2 font-bold">Standard: </p>
-                            <div class="w-1/2">
-                                <a href="/card/{{ $card->id }}/increment?type=standard" class="bg-pri text-white text-center py-10px w-40px inline-block ml-10px">+</a>
-                                <a href="/card/{{ $card->id }}/decrement?type=standard" class="bg-ter-300 text-black text-center py-10px w-40px inline-block ml-10px">-</a>
-                            </div>
+                        <div class="w-full px-10px py-5px mb-5px {{ $version->is_standard === true ? 'bg-pri' : 'bg-ter-300' }}">
+                            <p class="{{ $version->is_standard === true ? 'text-white' : 'text-black' }}">Standard</p>
                         </div>
-                    </div>
-
-                    <div class="pb-10px">
-                        <div class="w-full flex flex-row justify-start flex-wrap items-center mb-20px">
-                            <p class="w-1/2 font-bold">Reverse Holo: </p>
-                            <div class="w-1/2">
-                                <a href="/card/{{ $card->id }}/increment?type=standard" class="bg-pri text-white text-center py-10px w-40px inline-block ml-10px">+</a>
-                                <a href="/card/{{ $card->id }}/decrement?type=standard" class="bg-ter-300 text-black text-center py-10px w-40px inline-block ml-10px">-</a>
-                            </div>
+                        <div class="pl-10px">
+                            <p><span class="font-bold">Quantity: </span>{{ $version->quantity }}</p>
+                            <p><span class="font-bold">Value: </span>£{{ $version->value }}</p>
                         </div>
-                    </div>
+
+                    @endforeach
 
                 </div>
             </div>

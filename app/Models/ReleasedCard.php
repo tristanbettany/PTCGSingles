@@ -16,13 +16,9 @@ class ReleasedCard extends Model
     protected $fillable = [
         'set_id',
         'rarity_id',
-        'type_id',
         'number',
         'image',
-        'in_hand_quantity',
-        'tradeable_quantity',
         'data_source_url',
-        'is_reverse_holo',
         'name',
     ];
 
@@ -44,5 +40,10 @@ class ReleasedCard extends Model
     public function paddedNumber(): string
     {
         return str_pad($this->number, 3, "00", STR_PAD_LEFT);
+    }
+
+    public function versions()
+    {
+        return $this->hasMany(ReleasedCardVersion::class);
     }
 }
