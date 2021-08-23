@@ -40,4 +40,9 @@ class ReleasedCard extends Model
     {
         return $this->hasOne(Rarity::class, 'rarity_id');
     }
+
+    public function paddedNumber(): string
+    {
+        return str_pad($this->number, 3, "00", STR_PAD_LEFT);
+    }
 }
