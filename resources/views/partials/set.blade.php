@@ -22,12 +22,14 @@
 
                     @foreach($card->versions as $version)
 
-                        <div class="w-full px-10px py-5px mb-5px {{ $version->is_standard === true ? 'bg-pri' : 'bg-ter-300' }}">
-                            <p class="{{ $version->is_standard === true ? 'text-white' : 'text-black' }}">Standard</p>
-                        </div>
-                        <div class="pl-10px">
-                            <p><span class="font-bold">Quantity: </span>{{ $version->quantity }}</p>
-                            <p><span class="font-bold">Value: </span>£{{ $version->value }}</p>
+                        <div class="mb-20px">
+                            <div class="w-full px-10px py-5px mb-5px {{ $version->is_standard === true ? 'bg-pri' : 'bg-ter-300' }}">
+                                <p class="{{ $version->is_standard === true ? 'text-white' : 'text-black' }}">{{ $version->is_standard === true ? 'Standard' : 'Reverse Holo' }}</p>
+                            </div>
+                            <div class="pl-10px">
+                                <p><span class="font-bold">Quantity: </span>{{ $version->quantity }}</p>
+                                <p><span class="font-bold">Value: </span>£{{ $version->value }}</p>
+                            </div>
                         </div>
 
                     @endforeach
