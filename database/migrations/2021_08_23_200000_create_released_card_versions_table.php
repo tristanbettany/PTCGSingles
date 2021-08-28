@@ -14,7 +14,6 @@ class CreateReleasedCardVersionsTable extends Migration
             $table->boolean('is_standard')->default(true);
             $table->boolean('is_reverse_holo')->default(false);
             $table->float('value')->nullable();
-            $table->integer('quantity')->default(0);
 
             $table->foreign('released_card_id')
                 ->references('id')

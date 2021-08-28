@@ -18,7 +18,6 @@ class ReleasedCardVersion extends Model
         'is_standard',
         'is_reverse_holo',
         'value',
-        'quantity',
     ];
 
     protected $casts = [
