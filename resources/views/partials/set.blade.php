@@ -18,18 +18,27 @@
                     <a href="{{ asset('storage/' . $card->image) }}" target="_blank"><img src="{{ asset('storage/' . $card->image) }}"/></a>
                 </div>
                 <div class="w-1/2 px-10px">
-                    <h2 class="text-28px pb-10px">{{ $card->name }} {{ $card->paddedNumber() }}/{{ $set->base_card_count }}</h2>
+                    <h2 class="text-28px pb-20px">{{ $card->name }} {{ $card->paddedNumber() }}/{{ $set->base_card_count }}</h2>
 
                     @foreach($card->versions as $version)
 
                         <div class="mb-20px">
-                            <div class="w-full px-10px py-5px mb-5px {{ $version->is_standard === true ? 'bg-pri' : 'bg-ter-300' }}">
-                                <p class="{{ $version->is_standard === true ? 'text-white' : 'text-black' }}">{{ $version->is_standard === true ? 'Standard' : 'Reverse Holo' }}</p>
+                            <div class="w-full mb-10px">
+                                <p class="text-black font-bold">{{ $version->is_standard === true ? 'Standard' : 'Reverse Holo' }}</p>
                             </div>
-                            <div class="pl-10px">
-                                <p><span class="font-bold">Quantity: </span>{{ $version->quantity }}</p>
-                                <p><span class="font-bold">Value: </span>£{{ $version->value }}</p>
-                            </div>
+                            <form method="POST" action="/cards/{{ $card->id }}/versions/{{ $version->id }}">
+                                <div class="flex flex-row justify-start flex-wrap items-baseline">
+                                    <div class="w-1/3">
+                                        <input class="form-input py-5px" type="number" value="{{ $version->quantity() }}" placeholder="Quantity"/>
+                                    </div>
+                                    <div class="w-1/3">
+                                        <button class="bg-pri-500 text-white text-center hover:bg-white border-2 border-pri-500 hover:text-black py-5px px-10px w-full">Update</button>
+                                    </div>
+                                    <div class="w-1/3">
+                                        <a href="cards/{{ $card->id }}/versions/{{ $version->id }}/scrape-value" class="cursor-pointer px-10px py-5px bg-error-500 text-white border-2 border-error-500 w-full block">£ {{ $version->value ?? 00.00 }}</a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
 
                     @endforeach

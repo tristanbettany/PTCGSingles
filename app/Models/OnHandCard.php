@@ -25,6 +25,6 @@ class OnHandCard extends Model
 
     public function version()
     {
-        return $this->hasOne(ReleasedCardVersion::class);
+        return $this->belongsTo(ReleasedCardVersion::class);
     }
 }

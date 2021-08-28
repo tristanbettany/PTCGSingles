@@ -31,4 +31,19 @@ class ReleasedCardVersion extends Model
     {
         return $this->belongsTo(ReleasedCard::class, 'released_card_id');
     }
+
+    public function onHandCards()
+    {
+        return $this->hasMany(OnHandCard::class);
+    }
+
+    public function quantity(): int
+    {
+        $quantity = 0;
+        foreach ($this->onHandCards() as $card) {
+            $quantity += $card->quantity;
+        }
+
+        return $quantity;
+    }
 }
