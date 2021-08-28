@@ -7,3 +7,8 @@ Route::post('/cards/{cardId}/versions/{versionId}', [
     CardVersionController::class,
     'postIndex',
 ]);
+
+Route::get('/cards/{cardId}/versions/{versionId}/scrape-value', [
+    CardVersionController::class,
+    'getScrapeValue',
+]);

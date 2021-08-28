@@ -51,6 +51,7 @@
                                         data-card-id="{{ $card->id }}"
                                         data-version-id="{{ $version->id }}"
                                         class="text-center cursor-pointer px-10px py-5px bg-error-500 text-white border-2 border-error-500 w-full block"
+                                        onclick="scrapeValue(this)"
                                     >
                                         £ {{ $version->value ?? 00.00 }}
                                     </button>
@@ -76,6 +77,17 @@
             quantity: quantityEl.value,
         }).then(function (response) {
             quantityEl.value = response.data.quantity
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
+
+    function scrapeValue(button) {
+        let cardId = button.getAttribute('data-card-id')
+        let versionId = button.getAttribute('data-version-id')
+
+        axios.get('/api/cards/'+cardId+'/versions/'+versionId+'/scrape-value').then(function (response) {
+            button.innerHTML = '£ '+response.data.value
         }).catch(function (error) {
             console.log(error)
         })

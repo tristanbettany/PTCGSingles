@@ -27,4 +27,14 @@ class CardVersionController extends ApiController
             'quantity' => $updatedQuantity,
         ]);
     }
+
+    public function getScrapeValue(
+        int $cardId,
+        int $versionId,
+        Request $request
+    ): JsonResponse {
+        return new JsonResponse([
+            'value' => 1337.00,
+        ]);
+    }
 }
