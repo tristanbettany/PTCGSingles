@@ -26,19 +26,36 @@
                             <div class="w-full mb-10px">
                                 <p class="text-black font-bold">{{ $version->is_standard === true ? 'Standard' : 'Reverse Holo' }}</p>
                             </div>
-                            <form method="POST" action="/cards/{{ $card->id }}/versions/{{ $version->id }}">
-                                <div class="flex flex-row justify-start flex-wrap items-baseline">
-                                    <div class="w-1/3">
-                                        <input class="form-input py-5px" type="number" value="{{ $version->quantity() }}" placeholder="Quantity"/>
-                                    </div>
-                                    <div class="w-1/3">
-                                        <button class="bg-pri-500 text-white text-center hover:bg-white border-2 border-pri-500 hover:text-black py-5px px-10px w-full">Update</button>
-                                    </div>
-                                    <div class="w-1/3">
-                                        <a href="cards/{{ $card->id }}/versions/{{ $version->id }}/scrape-value" class="cursor-pointer px-10px py-5px bg-error-500 text-white border-2 border-error-500 w-full block">£ {{ $version->value ?? 00.00 }}</a>
-                                    </div>
+                            <div class="flex flex-row justify-start flex-wrap items-baseline">
+                                <div class="w-1/3">
+                                    <input
+                                        id="card{{ $card->id }}-version{{ $version->id }}-quantity"
+                                        class="form-input py-5px"
+                                        type="number"
+                                        value="{{ $version->quantity() }}"
+                                        placeholder="Quantity"
+                                    />
                                 </div>
-                            </form>
+                                <div class="w-1/3">
+                                    <button
+                                        data-card-id="{{ $card->id }}"
+                                        data-version-id="{{ $version->id }}"
+                                        class="bg-pri-500 text-white text-center hover:bg-white border-2 border-pri-500 hover:text-black py-5px px-10px w-full"
+                                        onclick="updateQuantity(this)"
+                                    >
+                                        Update
+                                    </button>
+                                </div>
+                                <div class="w-1/3">
+                                    <button
+                                        data-card-id="{{ $card->id }}"
+                                        data-version-id="{{ $version->id }}"
+                                        class="text-center cursor-pointer px-10px py-5px bg-error-500 text-white border-2 border-error-500 w-full block"
+                                    >
+                                        £ {{ $version->value ?? 00.00 }}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                     @endforeach
@@ -49,4 +66,18 @@
     </div>
 @endif
 
+<script>
+    function updateQuantity(button) {
+        let cardId = button.getAttribute('data-card-id')
+        let versionId = button.getAttribute('data-version-id')
+        let quantityEl = document.getElementById('card'+cardId+'-version'+versionId+'-quantity')
 
+        axios.post('/api/cards/'+cardId+'/versions/'+versionId, {
+            quantity: quantityEl.value,
+        }).then(function (response) {
+            quantityEl.value = response.data.quantity
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
+</script>

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use DateTimeImmutable;
 
-class RootController extends Controller
+class RootController extends WebController
 {
     public function getIndex(Request $request): Renderable
     {

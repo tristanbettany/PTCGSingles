@@ -7,6 +7,7 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <title>PTCG Singles</title>
     <script src="https://kit.fontawesome.com/a016df5e6e.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 
