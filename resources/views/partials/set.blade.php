@@ -1,25 +1,27 @@
 @if(empty($set) === false)
-    <div class="flex flex-row justify-start flex-wrap items-center">
-        <div class="w-1/4">
-            <img src="{{ asset('storage/' . $set->logo) }}"/>
-        </div>
-        <div class="w-1/4 pl-20px">
-            <p><span class="font-bold">Released:</span> {{ $set->release_date->format('Y-m-d') }}</p>
-            <p><span class="font-bold">Total Cards:</span> {{ $set->base_card_count + $set->secret_card_count }}</p>
-            <p><span class="font-bold">Secret Cards:</span> {{ $set->secret_card_count }}</p>
-            <p><span class="font-bold">Symbol:</span> <img class="inline-block" src="{{ asset('storage/' . $set->symbol) }}"/></p>
-        </div>
-        <div class="w-1/4 pl-20px">
-            <p><span class="font-bold">Versions With Stock:</span> {{ $set->withStock() }}</p>
-            <p><span class="font-bold">Versions With Duplicates:</span> {{ $set->withDuplicates() }}</p>
-            <p><span class="font-bold">Total On Hand Versions:</span> {{ $set->totalOnHand() }}</p>
-            <p><span class="font-bold">Total Duplicate Versions:</span> {{ $set->totalDuplicates() }}</p>
-        </div>
-        <div class="w-1/4 pl-20px">
-            <p><span class="font-bold">Versions Without Stock:</span> {{ $set->missingStock() }}</p>
-            <p><span class="font-bold">Versions Missing Values:</span> {{ $set->missingValues() }}</p>
-            <p><span class="font-bold">On Hand Value:</span> {{ $set->onHandValue() }}</p>
-            <p><span class="font-bold">Duplicates Value:</span> {{ $set->duplicatesValue() }}</p>
+    <div class="">
+        <div class="flex flex-row justify-start flex-wrap items-center">
+            <div class="w-1/4">
+                <img src="{{ asset('storage/' . $set->logo) }}"/>
+            </div>
+            <div class="w-1/4 pl-20px">
+                <p><span class="font-bold">Released:</span> {{ $set->release_date->format('Y-m-d') }}</p>
+                <p><span class="font-bold">Total Cards:</span> {{ $set->base_card_count + $set->secret_card_count }}</p>
+                <p><span class="font-bold">Secret Cards:</span> {{ $set->secret_card_count }}</p>
+                <p><span class="font-bold">Symbol:</span> <img class="inline-block" src="{{ asset('storage/' . $set->symbol) }}"/></p>
+            </div>
+            <div class="w-1/4 pl-20px">
+                <p><span class="font-bold">Versions With Stock:</span> <span id="versions-with-stock">{{ $set->withStock() }}</span></p>
+                <p><span class="font-bold">Versions With Duplicates:</span> <span id="versions-with-duplicates">{{ $set->withDuplicates() }}</span></p>
+                <p><span class="font-bold">Total On Hand Versions:</span> <span id="total-on-hand-versions">{{ $set->totalOnHand() }}</span></p>
+                <p><span class="font-bold">Total Duplicate Versions:</span> <span id="total-duplicate-versions">{{ $set->totalDuplicates() }}</span></p>
+            </div>
+            <div class="w-1/4 pl-20px">
+                <p><span class="font-bold">Versions Without Stock:</span> <span id="versions-without-stock">{{ $set->missingStock() }}</span></p>
+                <p><span class="font-bold">Versions Missing Values:</span> <span id="versions-missing-values">{{ $set->missingValues() }}</span></p>
+                <p><span class="font-bold">On Hand Value:</span> <span id="on-hand-value">{{ $set->onHandValue() }}</span></p>
+                <p><span class="font-bold">Duplicates Value:</span> <span id="duplicates-value">{{ $set->duplicatesValue() }}</span></p>
+            </div>
         </div>
     </div>
 
@@ -85,10 +87,27 @@
         let versionId = button.getAttribute('data-version-id')
         let quantityEl = document.getElementById('card'+cardId+'-version'+versionId+'-quantity')
 
+        let metaVersionsWithStock = document.getElementById('versions-with-stock')
+        let metaVersionsWithDuplicates = document.getElementById('versions-with-duplicates')
+        let metaTotalOnHandVersions = document.getElementById('total-on-hand-versions')
+        let metaTotalDuplicateVersions = document.getElementById('total-duplicate-versions')
+        let metaVersionsWithoutStock = document.getElementById('versions-without-stock')
+        let metaVersionsMissingValues = document.getElementById('versions-missing-values')
+        let metaOnHandValue = document.getElementById('on-hand-value')
+        let metaDuplicatesValue = document.getElementById('duplicates-value')
+
         axios.post('/api/cards/'+cardId+'/versions/'+versionId, {
             quantity: quantityEl.value,
         }).then(function (response) {
             quantityEl.value = response.data.quantity
+            metaVersionsWithStock.innerHTML = response.data.versionsWithStock;
+            metaVersionsWithDuplicates.innerHTML = response.data.versionsWithDuplicates;
+            metaTotalOnHandVersions.innerHTML = response.data.totalOnHandVersions;
+            metaTotalDuplicateVersions.innerHTML = response.data.totalDuplicateVersions;
+            metaVersionsWithoutStock.innerHTML = response.data.versionsWithoutStock;
+            metaVersionsMissingValues.innerHTML = response.data.versionsMissingValues;
+            metaOnHandValue.innerHTML = response.data.onHandValue;
+            metaDuplicatesValue.innerHTML = response.data.duplicatesValue;
         }).catch(function (error) {
             console.log(error)
         })

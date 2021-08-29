@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Interfaces\CardVersionServiceInterface;
+use App\Models\ReleasedCard;
+use App\Models\Set;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -23,8 +25,18 @@ class CardVersionController extends ApiController
             $request->get('quantity')
         );
 
+        $set = ReleasedCard::find($cardId)->set;
+
         return new JsonResponse([
             'quantity' => $updatedQuantity,
+            'onHandValue' => round($set->onHandValue(), 2),
+            'duplicatesValue' => round($set->duplicatesValue(), 2),
+            'versionsMissingValues' => $set->missingValues(),
+            'versionsWithoutStock' => $set->missingStock(),
+            'versionsWithStock' => $set->withStock(),
+            'versionsWithDuplicates' => $set->withDuplicates(),
+            'totalOnHandVersions' => $set->totalOnHand(),
+            'totalDuplicateVersions' => $set->totalDuplicates(),
         ]);
     }
 
