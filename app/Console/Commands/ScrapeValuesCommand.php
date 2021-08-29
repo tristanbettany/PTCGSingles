@@ -23,7 +23,7 @@ class ScrapeValuesCommand extends Command
         $versions = ReleasedCardVersion::query()
             ->where('value', null)
             ->orWhere('value', '<=', 0)
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('updated_at', 'DESC')
             ->get();
 
         foreach($versions as $version) {
