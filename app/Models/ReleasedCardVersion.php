@@ -40,7 +40,7 @@ class ReleasedCardVersion extends Model
     public function quantity(): int
     {
         $quantity = 0;
-        foreach ($this->onHandCards() as $card) {
+        foreach ($this->onHandCards as $card) {
             $quantity += $card->quantity;
         }
 

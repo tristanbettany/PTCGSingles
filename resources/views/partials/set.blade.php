@@ -3,11 +3,23 @@
         <div class="w-1/4">
             <img src="{{ asset('storage/' . $set->logo) }}"/>
         </div>
-        <div class="w-3/4 pl-20px">
+        <div class="w-1/4 pl-20px">
             <p><span class="font-bold">Released:</span> {{ $set->release_date->format('Y-m-d') }}</p>
             <p><span class="font-bold">Total Cards:</span> {{ $set->base_card_count + $set->secret_card_count }}</p>
             <p><span class="font-bold">Secret Cards:</span> {{ $set->secret_card_count }}</p>
             <p><span class="font-bold">Symbol:</span> <img class="inline-block" src="{{ asset('storage/' . $set->symbol) }}"/></p>
+        </div>
+        <div class="w-1/4 pl-20px">
+            <p><span class="font-bold">Versions With Stock:</span> {{ $set->withStock() }}</p>
+            <p><span class="font-bold">Versions With Duplicates:</span> {{ $set->withDuplicates() }}</p>
+            <p><span class="font-bold">Total On Hand Versions:</span> {{ $set->totalOnHand() }}</p>
+            <p><span class="font-bold">Total Duplicate Versions:</span> {{ $set->totalDuplicates() }}</p>
+        </div>
+        <div class="w-1/4 pl-20px">
+            <p><span class="font-bold">Versions Without Stock:</span> {{ $set->missingStock() }}</p>
+            <p><span class="font-bold">Versions Missing Values:</span> {{ $set->missingValues() }}</p>
+            <p><span class="font-bold">On Hand Value:</span> {{ $set->onHandValue() }}</p>
+            <p><span class="font-bold">Duplicates Value:</span> {{ $set->duplicatesValue() }}</p>
         </div>
     </div>
 
