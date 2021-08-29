@@ -56,12 +56,16 @@ final class CardVersionService extends AbstractService implements CardVersionSer
             $values[] = $scraper->scrapeValue($version);
         }
 
+        $values = array_filter($values);
+        $arrayCount = count($values);
+        $arraySum = array_sum($values);
+
         if (
             empty($values) === false
-            && count($values) > 0
+            && $arrayCount > 0
+            && $arraySum > 0
         ) {
-            $values = array_filter($values);
-            $averageValue = array_sum($values) / count($values);
+            $averageValue = $arraySum / $arrayCount;
 
             $version->value = $averageValue;
             $version->save();

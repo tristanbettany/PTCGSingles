@@ -29,6 +29,10 @@ final class MagicMadhouseValueScraper extends AbstractValueScraper
             $cardName = $card->name;
             $setName = $card->set->name;
 
+            if (empty($searchResults['products']) === true) {
+                return $value;
+            }
+
             foreach ($searchResults['products'] as $product) {
                 if (
                     str_contains($product['title'], $setName) === true
