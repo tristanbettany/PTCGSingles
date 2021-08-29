@@ -34,7 +34,7 @@ class CardVersionController extends ApiController
         Request $request
     ): JsonResponse {
         return new JsonResponse([
-            'value' => 1337.00,
+            'value' => $this->cardVersionService->scrapeValue($versionId),
         ]);
     }
 }

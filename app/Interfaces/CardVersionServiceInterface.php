@@ -12,4 +12,6 @@ interface CardVersionServiceInterface
     ): int;
 
     public function getVersionById(int $versionId): ?ReleasedCardVersion;
+
+    public function scrapeValue(int $versionId): float;
 }

@@ -8,6 +8,6 @@ abstract class AbstractCardScraper extends AbstractScraper implements CardScrape
 {
     public function scrapeCards(bool $verbose = false): void
     {
-        // TODO: Implement processSets() method.
+        // TODO: Implement scrapeCards() method.
     }
 }

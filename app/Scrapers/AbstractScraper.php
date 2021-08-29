@@ -45,16 +45,24 @@ abstract class AbstractScraper implements ScraperInterface
         return $filename;
     }
 
-    protected function scrape(string $url): string
-    {
+    protected function scrape(
+        string $url,
+        array $query = []
+    ): string {
+        $options = [
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+            ],
+        ];
+
+        if (empty($query) === false) {
+            $options['query'] = $query;
+        }
+
         $response = $this->guzzle->request(
             'GET',
             $url,
-            [
-                'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
-                ],
-            ]
+            $options
         );
 
         return $response->getBody()->getContents();
