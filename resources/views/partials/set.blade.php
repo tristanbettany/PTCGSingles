@@ -19,13 +19,17 @@
             <div class="w-1/4 pl-20px">
                 <p><span class="font-bold">Versions Without Stock:</span> <span id="versions-without-stock">{{ $set->missingStock() }}</span></p>
                 <p><span class="font-bold">Versions Missing Values:</span> <span id="versions-missing-values">{{ $set->missingValues() }}</span></p>
-                <p><span class="font-bold">On Hand Value:</span> <span id="on-hand-value">{{ $set->onHandValue() }}</span></p>
-                <p><span class="font-bold">Duplicates Value:</span> <span id="duplicates-value">{{ $set->duplicatesValue() }}</span></p>
+                <p><span class="font-bold">On Hand Value:</span> £<span id="on-hand-value">{{ $set->onHandValue() }}</span></p>
+                <p><span class="font-bold">Duplicates Value:</span> £<span id="duplicates-value">{{ $set->duplicatesValue() }}</span></p>
             </div>
         </div>
     </div>
 
-    <div class="flex flex-row justify-start flex-wrap items-start pt-20px">
+    @includeIf('partials.filters', [
+        'set' => $set,
+    ])
+
+    <div class="flex flex-row justify-start flex-wrap items-start pt-40px">
         @foreach($set->releasedCards as $card)
             <div class="w-1/2 flex flex-row justify-start flex-wrap items-start mb-20px">
                 <div class="w-1/2">
