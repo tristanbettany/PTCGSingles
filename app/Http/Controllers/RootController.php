@@ -20,6 +20,20 @@ class RootController extends WebController
     public function getIndex(Request $request): Renderable
     {
         if ($request->has('set') === true) {
+            if (
+                $request->has('export') === true
+                && $request->get('export') === 'swaps'
+            ) {
+                $this->setService->exportSwaps($request->get('set'));
+            }
+
+            if (
+                $request->has('export') === true
+                && $request->get('export') === 'needs'
+            ) {
+                $this->setService->exportNeeds($request->get('set'));
+            }
+
             $set = $this->setService->getSet($request->get('set'));
 
             $releasedCardsQuery = $this->cardService->getReleasedCardsQuery();

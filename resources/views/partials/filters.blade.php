@@ -20,5 +20,13 @@
             </div>
         </div>
 
+        <div class="w-full sm:w-1/4 sm:px-10px">
+            <a href="?set={{ $set->id }}&export=needs" class="w-full block bg-ter-200 hover:bg-white text-black text-center border-2 border-ter-200 w-full py-5px" name="filter">Export Needs</a>
+        </div>
+
+        <div class="w-full sm:w-1/4 sm:px-10px">
+            <a href="?set={{ $set->id }}&export=swaps" class="w-full block bg-ter-200 hover:bg-white text-black text-center border-2 border-ter-200 w-full py-5px" name="filter">Export Swaps</a>
+        </div>
+
     </div>
 </form>
