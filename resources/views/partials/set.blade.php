@@ -30,7 +30,7 @@
     ])
 
     <div class="flex flex-row justify-start flex-wrap items-start pt-40px">
-        @foreach($set->releasedCards as $card)
+        @foreach($releasedCards as $card)
             <div class="w-1/2 flex flex-row justify-start flex-wrap items-start mb-20px">
                 <div class="w-1/2">
                     <a href="{{ asset('storage/' . $card->image) }}" target="_blank"><img src="{{ asset('storage/' . $card->image) }}"/></a>

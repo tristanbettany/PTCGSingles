@@ -13,7 +13,7 @@
                 <select class="form-select" name="filter_type">
                     @includeIf('partials.select-options', [
                         'options' => \App\Services\SetService::FILTER_OPTIONS,
-                        'selected' => request()->has('filter_type') === true ? request()->get('filter_type') : 'None',
+                        'selected' => request()->has('filter_type') === true ? request()->get('filter_type') : \App\Services\SetService::NONE,
                     ])
                 </select>
                 @includeIf('partials.select-icon')

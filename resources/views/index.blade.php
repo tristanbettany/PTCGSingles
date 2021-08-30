@@ -4,6 +4,7 @@
 
     @includeIf('partials.set', [
         'set' => $set,
+        'releasedCards' => $releasedCards,
     ])
 
     @includeIf('partials.latest-sets', [
