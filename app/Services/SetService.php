@@ -41,8 +41,10 @@ final class SetService extends AbstractService implements SetServiceInterface
             ->get();
     }
 
-    public function getSwapsList(int $setId): array
-    {
+    public function getSwapsList(
+        int $setId,
+        bool $isExport = false
+    ): array {
         $records = ReleasedCardVersion::query()
             ->get()
             ->filter(function ($version) use ($setId) {
@@ -56,6 +58,14 @@ final class SetService extends AbstractService implements SetServiceInterface
 
                 return true;
             });
+
+        if ($isExport === true) {
+            $records = $records->sortBy(
+                function($version) {
+                    return $version->value;
+                }, SORT_REGULAR, true
+            );
+        }
 
         $rows = [];
         foreach ($records as $record) {
@@ -73,8 +83,10 @@ final class SetService extends AbstractService implements SetServiceInterface
         return $rows;
     }
 
-    public function getNeedsList(int $setId): array
-    {
+    public function getNeedsList(
+        int $setId,
+        bool $isExport = false
+    ): array {
         $records = ReleasedCardVersion::query()
             ->get()
             ->filter(function ($version) use ($setId) {
@@ -88,6 +100,14 @@ final class SetService extends AbstractService implements SetServiceInterface
 
                 return true;
             });
+
+        if ($isExport === true) {
+            $records = $records->sortBy(
+                function($version) {
+                    return $version->value;
+                }
+            );
+        }
 
         $rows = [];
         foreach ($records as $record) {
@@ -107,7 +127,7 @@ final class SetService extends AbstractService implements SetServiceInterface
 
     public function exportSwaps(int $setId): void
     {
-        $rows = $this->getSwapsList($setId);
+        $rows = $this->getSwapsList($setId, true);
 
         $headers = [
             '#',
@@ -127,7 +147,7 @@ final class SetService extends AbstractService implements SetServiceInterface
 
     public function exportNeeds(int $setId): void
     {
-        $rows = $this->getNeedsList($setId);
+        $rows = $this->getNeedsList($setId, true);
 
         $headers = [
             '#',
