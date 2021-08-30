@@ -11,14 +11,14 @@
                 <p><span class="font-bold">Symbol:</span> <img class="inline-block" src="{{ asset('storage/' . $set->symbol) }}"/></p>
             </div>
             <div class="w-1/4 pl-20px">
-                <p><span class="font-bold">Versions With Stock:</span> <span id="versions-with-stock">{{ $set->withStock() }}</span></p>
-                <p><span class="font-bold">Versions With Duplicates:</span> <span id="versions-with-duplicates">{{ $set->withDuplicates() }}</span></p>
-                <p><span class="font-bold">Total On Hand Versions:</span> <span id="total-on-hand-versions">{{ $set->totalOnHand() }}</span></p>
+                <p><span class="font-bold">Unique Versions In Hand:</span> <span id="versions-with-stock">{{ $set->withStock() }}</span></p>
+                <p><span class="font-bold">Unique Duplicate Versions:</span> <span id="versions-with-duplicates">{{ $set->withDuplicates() }}</span></p>
+                <p><span class="font-bold">Total Versions In Hand:</span> <span id="total-on-hand-versions">{{ $set->totalOnHand() }}</span></p>
                 <p><span class="font-bold">Total Duplicate Versions:</span> <span id="total-duplicate-versions">{{ $set->totalDuplicates() }}</span></p>
             </div>
             <div class="w-1/4 pl-20px">
-                <p><span class="font-bold">Versions Without Stock:</span> <span id="versions-without-stock">{{ $set->missingStock() }}</span></p>
-                <p><span class="font-bold">Versions Missing Values:</span> <span id="versions-missing-values">{{ $set->missingValues() }}</span></p>
+                <p><span class="font-bold">Unique Versions NOT In Hand:</span> <span id="versions-without-stock">{{ $set->missingStock() }}</span></p>
+                <p><span class="font-bold">Unique Versions Missing Value:</span> <span id="versions-missing-values">{{ $set->missingValues() }}</span></p>
                 <p><span class="font-bold">On Hand Value:</span> £<span id="on-hand-value">{{ $set->onHandValue() }}</span></p>
                 <p><span class="font-bold">Duplicates Value:</span> £<span id="duplicates-value">{{ $set->duplicatesValue() }}</span></p>
             </div>

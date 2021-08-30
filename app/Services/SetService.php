@@ -10,9 +10,9 @@ use DateTimeImmutable;
 final class SetService extends AbstractService implements SetServiceInterface
 {
     public const NONE = 'None';
-    public const GOT = 'Cards With Versions In Stock (Got)';
-    public const NEED = 'Cards Missing Version Stock (Need)';
-    public const EXP = 'Expensive Cards First';
+    public const GOT = 'Cards With All Versions In Hand';
+    public const NEED = 'Cards With Versions NOT In Hand';
+    public const EXP = 'Most Expensive Cards First';
     public const ABO = 'Cards Above 1 GBP';
     public const AVMAX = 'All VMAX Cards';
     public const AV = 'All V Cards';
