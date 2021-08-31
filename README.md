@@ -9,3 +9,5 @@ This app is for manging your pokemon singles, like tracking the value and invent
 
 So If you read the above note, to summarise, just make sure you are aware if using this, that its a prototype and 
 will be re-built soon.
+
+![Screenie(/screenie.jpg?raw=true "Screenie")
