@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 class ScrapeValuesCommand extends Command
 {
-    protected $signature = 'scrape:values';
+    protected $signature = 'scrape:values {setId?}';
     protected $description = 'Scrape Values';
 
     private CardVersionServiceInterface $cardVersionService;
@@ -16,15 +16,26 @@ class ScrapeValuesCommand extends Command
     public function handle(
         CardVersionServiceInterface $cardVersionService
     ): int {
+        $setId = $this->argument('setId');
+
         $this->cardVersionService = $cardVersionService;
 
         $this->info('Scraping values...');
 
         $versions = ReleasedCardVersion::query()
-            ->where('value', null)
-            ->orWhere('value', '<=', 0)
             ->orderBy('updated_at', 'DESC')
             ->get();
+
+        if (empty($setId) === false) {
+            $setId = (int) $setId;
+            $versions = $versions->filter(function($version) use($setId) {
+                if ($version->releasedCard->set_id === $setId) {
+                    return true;
+                }
+
+                return false;
+            });
+        }
 
         foreach($versions as $version) {
             $card = $version->releasedCard;
