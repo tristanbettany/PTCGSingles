@@ -36,7 +36,7 @@ final class SetService extends AbstractService implements SetServiceInterface
 
     public function getLatestSets(): Collection
     {
-        Set::query()
+        return Set::query()
             ->where('release_date', '>=', new DateTimeImmutable('2 years ago'))
             ->get();
     }
