@@ -39,11 +39,14 @@ final class MagicMadhouseValueScraper extends AbstractValueScraper
                     && str_contains($product['title'], "$cardNumber/$cardCount") === true
                     && str_contains($product['title'], $cardName) === true
                 ) {
-                    if (
-                        str_contains($product['title'], '(Reverse Holo)') === true
-                        && $version->is_reverse_holo === false
-                    ) {
-                        continue;
+                    if ($version->is_reverse_holo === false) {
+                        if (str_contains($product['title'], '(Reverse Holo)') === true) {
+                            continue;
+                        }
+                    } else if ($version->is_reverse_holo === true) {
+                        if (str_contains($product['title'], '(Reverse Holo)') === false) {
+                            continue;
+                        }
                     }
 
                     $priceHtml = $product['price'];
