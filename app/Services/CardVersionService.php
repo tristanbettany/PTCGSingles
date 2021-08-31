@@ -73,6 +73,6 @@ final class CardVersionService extends AbstractService implements CardVersionSer
             return $averageValue;
         }
 
-        return 00.00;
+        return $version->value ?? 00.00;
     }
 }
